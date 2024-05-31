@@ -24,6 +24,7 @@ import org.apache.paimon.metastore.MetastoreClient;
 import org.apache.paimon.schema.Schema;
 import org.apache.paimon.schema.SchemaChange;
 import org.apache.paimon.table.Table;
+import org.apache.paimon.utils.BranchManager;
 
 import java.io.Serializable;
 import java.util.Collections;
@@ -234,7 +235,12 @@ public interface Catalog extends AutoCloseable {
      * @throws TableNotExistException if the table does not exist
      * @throws PartitionNotExistException if the partition does not exist
      */
-    void dropPartition(Identifier identifier, Map<String, String> partitions)
+    default void dropPartition(Identifier identifier, Map<String, String> partitions)
+            throws TableNotExistException, PartitionNotExistException {
+        dropPartition(identifier, partitions, BranchManager.DEFAULT_MAIN_BRANCH);
+    }
+
+    void dropPartition(Identifier identifier, Map<String, String> partitions, String branch)
             throws TableNotExistException, PartitionNotExistException;
 
     /**
